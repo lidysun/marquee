@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>input dome</title>
+    <script src="http://apps.bdimg.com/libs/jquery/1.8.1/jquery.min.js"></script>
+    <style>
+        *{margin:0;padding:0;text-decoration:none;list-style-type:none;}
+        .companies{height:180px;overflow:hidden;border:1px solid #ddd;width:300px;margin:20px auto;font-size:12px;position:relative;}
+        .marquee-item li{padding:10px;border-bottom:1px dashed #eee;line-height:20px;}
+    </style>
+</head>
+<body>
+    <h3 align="center">最新入驻商家</h3>
+    <div class="companies">
+        <ul class="marquee-item company-list">
+            <li>
+                <a href="#">
+                    <p class="name">1深圳华强电子交易网络有限公司</p>
+                    <p class="info">主营：电子元器件</p>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <p class="name">2深圳市乾盛达科技有限公司</p>
+                    <p class="info">主营：电子连接器</p>
+                    <p>test</p>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <p class="name">3深圳华强电子交易网络有限公司</p>
+                    <p class="info">主营：电子元器件</p>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <p class="name">4深圳市福田区华力普电子经营部</p>
+                    <p class="info">主营：LED灯带</p>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <p class="name">5深圳一二三四经营部</p>
+                    <p class="info">主营：电子元器件</p>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <p class="name">6深圳六六顺电子经营部</p>
+                    <p class="info">主营：电子元器件</p>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <script>
+        //文字滚动
+        $.fn.marquee = function(opt) {
+            return $(this).each(function(){
+                var defaults = {
+                    speed:50//滚动每个元素所耗时间，即速度
+                };
+                opt = $.extend({},defaults,opt);
+                var $me = $(this);
+                var itemsHeight = $me.outerHeight(true);
+                var parentHeight = $me.offsetParent().height();
+                var $items = $me.find('li');
+                var itemNum = $items.length;
+                if(itemNum > 0){
+                    var loop = function(){
+                        // css
+                        /*var marginTop = parseInt($me.css('marginTop'));
+                        $me.css('marginTop',marginTop - 1);
+                        var topValue = Math.abs(parseInt($me.css('marginTop')));
+                        if(topValue > itemsHeight - parentHeight){
+                            $me.css('marginTop',0);
+                        }*/
+                        // animate
+                        $me.animate({
+                            'marginTop':'-=1'
+                        }, opt.speed, 'linear', function(){
+                            var topValue = Math.abs(parseInt($me.css('marginTop')));
+                            if(topValue > itemsHeight - parentHeight){
+                                $me.css('marginTop',0);
+                            }
+                        })
+                    };
+                    clearInterval(t);
+                    var t = setInterval(loop);
+                    $me.hover(function(){
+                        $me.stop(true,false);
+                        clearInterval(t); 
+                   },function(){
+                        t = setInterval(loop,opt.speed);
+                   });
+                }
+
+            });
+        };
+        $('.company-list').marquee();
+    </script>
+</body>
+</html>
