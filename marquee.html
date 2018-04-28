@@ -71,6 +71,9 @@
                 var $items = $me.find('li');
                 var itemNum = $items.length;
                 if(itemNum > 0){
+                    if (itemsHeight <=  parentHeight){
+                        return false
+                    }
                     var loop = function(){
                         // css
                         /*var marginTop = parseInt($me.css('marginTop'));
