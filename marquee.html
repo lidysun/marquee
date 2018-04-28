@@ -61,34 +61,23 @@
         //文字滚动
         $.fn.marquee = function(opt) {
             return $(this).each(function(){
-                var defaults = {
-                    speed:50//滚动每个元素所耗时间，即速度
-                };
-                opt = $.extend({},defaults,opt);
                 var $me = $(this);
                 var itemsHeight = $me.outerHeight(true);
                 var parentHeight = $me.offsetParent().height();
                 var $items = $me.find('li');
-                var itemNum = $items.length;
-                if(itemNum > 0){
-                    if (itemsHeight <=  parentHeight){
-                        return false
-                    }
+                var defaults = {
+                    speed:40 //滚动每个元素所耗时间，即速度
+                };
+                opt = $.extend({},defaults,opt);
+                if($items.length > 0 && itemsHeight >  parentHeight){
                     var loop = function(){
-                        // css
-                        /*var marginTop = parseInt($me.css('marginTop'));
-                        $me.css('marginTop',marginTop - 1);
-                        var topValue = Math.abs(parseInt($me.css('marginTop')));
-                        if(topValue > itemsHeight - parentHeight){
-                            $me.css('marginTop',0);
-                        }*/
-                        // animate
                         $me.animate({
-                            'marginTop':'-=1'
+                            'marginTop' : '-=1'
                         }, opt.speed, 'linear', function(){
                             var topValue = Math.abs(parseInt($me.css('marginTop')));
-                            if(topValue > itemsHeight - parentHeight){
-                                $me.css('marginTop',0);
+                            var $first = $me.find('li').eq(0);
+                            if(topValue >= $first.outerHeight(true)){
+                                $me.append($first.remove()).css('marginTop',0);
                             }
                         })
                     };
@@ -101,10 +90,9 @@
                         t = setInterval(loop,opt.speed);
                    });
                 }
-
             });
         };
-        $('.company-list').marquee();
+        $('.company-list').marquee({speed:20});
     </script>
 </body>
 </html>
