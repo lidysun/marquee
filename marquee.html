@@ -16,7 +16,7 @@
 <body>
     <h3 align="center">最新入驻商家</h3>
     <div class="companies">
-        <ul class="marquee-item company-list">
+        <ul class="marquee-item company-list1">
             <li>
                 <a href="#">
                     <p class="name">1深圳华强电子交易网络有限公司</p>
@@ -56,7 +56,47 @@
             </li>
         </ul>
     </div>
-
+    <div class="companies">
+        <ul class="marquee-item company-list2">
+            <li>
+                <a href="#">
+                    <p class="name">1深圳华强电子交易网络有限公司</p>
+                    <p class="info">主营：电子元器件</p>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <p class="name">2深圳市乾盛达科技有限公司</p>
+                    <p class="info">主营：电子连接器</p>
+                    <p>test</p>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <p class="name">3深圳华强电子交易网络有限公司</p>
+                    <p class="info">主营：电子元器件</p>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <p class="name">4深圳市福田区华力普电子经营部</p>
+                    <p class="info">主营：LED灯带</p>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <p class="name">5深圳一二三四经营部</p>
+                    <p class="info">主营：电子元器件</p>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <p class="name">6深圳六六顺电子经营部</p>
+                    <p class="info">主营：电子元器件</p>
+                </a>
+            </li>
+        </ul>
+    </div>
     <script>
         //文字滚动
         $.fn.marquee = function(opt) {
@@ -66,21 +106,41 @@
                 var parentHeight = $me.offsetParent().height();
                 var $items = $me.find('li');
                 var defaults = {
-                    speed:40 //滚动每个元素所耗时间，即速度
+                    speed:40, //滚动每个元素所耗时间，即速度
+                    direction:'top'
                 };
                 opt = $.extend({},defaults,opt);
                 if($items.length > 0 && itemsHeight >  parentHeight){
-                    var loop = function(){
-                        $me.animate({
-                            'marginTop' : '-=1'
-                        }, opt.speed, 'linear', function(){
-                            var topValue = Math.abs(parseInt($me.css('marginTop')));
-                            var $first = $me.find('li').eq(0);
-                            if(topValue >= $first.outerHeight(true)){
-                                $me.append($first.remove()).css('marginTop',0);
-                            }
-                        })
-                    };
+                    var isTop =  opt.direction === 'bottom' ? false : true;
+                    var loop = null;
+                    if(isTop){
+                        loop = function(){
+                            $me.animate({
+                                'marginTop' : '-=1'
+                            }, opt.speed, 'linear', function(){
+                                var topValue = Math.abs(parseInt($me.css('marginTop')));
+                                var $first = $me.find('li').eq(0);
+                                if(topValue >= $first.outerHeight(true)){
+                                    $me.append($first.remove()).css('marginTop',0);
+                                }
+                            });
+                        };
+                    }else{
+                        //初始化复制最后一个
+                        var $last = $me.find('li').last();
+                        $me.prepend($last.clone()).css('marginTop',-$last.outerHeight(true));
+                        loop = function(){
+                            $me.animate({
+                                'marginTop' : '+=1'
+                            }, opt.speed, 'linear',function(){
+                                var topValue = parseInt($me.css('marginTop'));
+                                if(topValue > 0){
+                                    var $last = $me.find('li').last().prev();//初始化后最后一个是倒数第二个
+                                    $me.prepend($last.remove()).css('marginTop',-$last.outerHeight(true));
+                                }
+                            });
+                        };
+                    }
                     clearInterval(t);
                     var t = setInterval(loop);
                     $me.hover(function(){
@@ -92,7 +152,8 @@
                 }
             });
         };
-        $('.company-list').marquee({speed:20});
+        $('.company-list1').marquee({speed:20,'direction':'bottom'});
+        $('.company-list2').marquee({speed:20,'direction':'top'});
     </script>
 </body>
 </html>
