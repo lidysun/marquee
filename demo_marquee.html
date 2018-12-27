@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="renderer" content="webkit">
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>input dome</title>
+        <script src="http://apps.bdimg.com/libs/jquery/1.8.1/jquery.min.js"></script>
+        <style>
+        *{margin:0;padding:0;}
+        .slider-marquee{border:1px solid #ddd;margin-bottom:15px;width:300px;overflow:hidden;}
+        .slider-marquee li{padding:10px;width:280px;border-right:1px solid #fff;background:#f2f2f2;list-style-type:none;}
+        </style>
+    </head>
+    <body>
+        <div class="slider-container slider1">
+            <ul class="slider-list">
+                <li class="slider-item">
+                    <a href="#">
+                        <p class="name">1深圳高兴电子科技有限公司</p>
+                        <p class="info">主营：电子元器件</p>
+                    </a>
+                </li>
+                <li class="slider-item">
+                    <a href="#">
+                        <p class="name">2深圳悲伤电子科技有限公司</p>
+                        <p class="info">主营：电子连接器</p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="slider-container slider2">
+            <ul class="slider-list">
+                <li class="slider-item">
+                    <a href="#">
+                        <p class="name">A深圳高兴电子科技有限公司</p>
+                        <p class="info">主营：电子元器件</p>
+                    </a>
+                </li>
+                <li class="slider-item">
+                    <a href="#">
+                        <p class="name">B深圳悲伤电子科技有限公司</p>
+                        <p class="info">主营：电子连接器</p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="slider-container slider3">
+            <ul class="slider-list">
+                <li class="slider-item">
+                    <a href="#">
+                        <p class="name">1.深圳高兴电子科技有限公司</p>
+                        <p class="info">主营：电子元器件</p>
+                    </a>
+                </li>
+                <li class="slider-item">
+                    <a href="#">
+                        <p class="name">2.深圳悲伤电子科技有限公司</p>
+                        <p class="info">主营：电子连接器</p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="slider-container slider4">
+            <ul class="slider-list">
+                <li class="slider-item">
+                    <a href="#">
+                        <p class="name">I.深圳高兴电子科技有限公司</p>
+                        <p class="info">主营：电子元器件</p>
+                    </a>
+                </li>
+                <li class="slider-item">
+                    <a href="#">
+                        <p class="name">II.深圳悲伤电子科技有限公司</p>
+                        <p class="info">主营：电子连接器</p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <script>
+        //轮播及文字跑马灯
+        $.fn.slider = function(opt) {
+            return $(this).each(function() {
+                var $me = $(this); //slider-container
+                var defaults = {
+                    type: 'slider', //滚动类型 marquee|slider
+                    speed: 30, //滚动每个元素所耗毫秒时间，即速度,值越小越快
+                    direction: 'top', //滚动方向bottom|top|left|right
+                    visible: 1, //容器可见数量
+                    height: null //容器像素高度
+                };
+                opt = $.extend({}, defaults, opt);
+                if (opt.type === 'marquee') {
+                    $me.addClass('slider-marquee');
+                } else {
+                    $me.addClass('slider-banner');
+                }
+                var $wrap = $me.children('.slider-list'); //ul容器
+                var wrapHeight = null; //ul高度
+                var wrapWidth = null; //ul宽度
+                var $item = $wrap.find('.slider-item'); //每个滚动元素
+                var itemHeight = $item.outerHeight(true); //单个滚动元素高
+                var itemWidth = $item.outerWidth(true); //单个滚动元素宽
+                var cssRelative = {
+                    position: 'relative',
+                    zIndex: 1,
+                    overflow: 'hidden'
+                };
+                $me.css(cssRelative);
+                $wrap.css(cssRelative);
+
+                var isHorizontal = opt.direction === 'left' || opt.direction === 'right';
+                var isVertical = opt.direction === 'bottom' || opt.direction === 'top';
+                var isReverse = opt.direction === 'bottom' || opt.direction === 'right';
+
+                //复制一份插入首尾
+                var $copy = $wrap.children().clone().addClass('slider-item-copy');
+                isReverse ? $wrap.prepend($copy) : $wrap.append($copy);
+
+                if (isHorizontal) {
+                    // 水平容器高宽度样式设置
+                    var $itemsAll = $wrap.find('.slider-item');
+                    var $clear = $('<div style="clear:both;height:0;visibility:hidden;"></div>');
+                    $me.css({
+                        height: itemHeight,
+                        width: itemWidth * opt.visible
+                    });
+                    $wrap.append($clear).css({
+                        width: itemWidth * $itemsAll.length
+                    });
+                    $itemsAll.css({
+                        float: 'left'
+                    });
+
+                    wrapWidth = $wrap.outerWidth(true) / 2; //水平方向时宽度需要除去复制的
+                    wrapHeight = $wrap.outerHeight(true);
+                } else {
+                    // 垂直容器高宽度样式设置
+                    $me.css('height', itemHeight * opt.visible);
+                    wrapHeight = $wrap.outerHeight(true) / 2; //垂直方向时高度需要除去复制的
+                    wrapWidth = $wrap.outerWidth(true);
+                }
+                //自定义容器高读
+                opt.height && $me.css('height', opt.height);
+
+                //整体偏移$item.length个元素高或宽度(bottom|right)
+                if (opt.direction === 'bottom') {
+                    $wrap.css('marginTop', -wrapHeight);
+                }
+                if (opt.direction === 'right') {
+                    $wrap.css('marginLeft', -wrapWidth);
+                }
+
+                var cssObj = {};
+                var cssStyle = isVertical ? 'top' : 'left';
+                var cssValue = isReverse ? '+=1' : '-=1';
+                cssObj[cssStyle] = cssValue;
+                //滚动函数
+                var loop = function() {
+                    $wrap.animate(cssObj, opt.speed, 'linear', function() {
+                        var moveValue = Math.abs(parseInt($wrap.css(cssStyle)));
+                        if (moveValue > (isVertical ? wrapHeight : wrapWidth)) {
+                            $wrap.css(cssStyle, 0);
+                        }
+                    });
+                };
+
+                clearInterval(t);
+                var t = window.setInterval(loop, 1);
+                $me.hover(function() {
+                    $wrap.stop(true, false);
+                    clearInterval(t);
+                }, function() {
+                    t = setInterval(loop, opt.speed);
+                });
+            });
+        };
+        $('.slider1').slider({
+            type: 'marquee',
+            speed: 20,
+            direction: 'top',
+            visible: 1
+        });
+        $('.slider2').slider({
+            type: 'marquee',
+            speed: 20,
+            direction: 'bottom',
+            visible: 2
+        });
+        $('.slider3').slider({
+            type: 'marquee',
+            speed: 20,
+            direction: 'left',
+            visible: 1
+        });
+        $('.slider4').slider({
+            type: 'marquee',
+            speed: 20,
+            direction: 'right',
+            visible: 1
+        });
+        </script>
+    </body>
+</html>
